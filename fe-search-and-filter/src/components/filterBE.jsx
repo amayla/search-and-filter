@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
+import querystring from 'query-string'
+
 const URL_API = 'http://localhost:1110/'
 class filterBE extends Component{
     constructor(props){
@@ -19,28 +21,15 @@ class filterBE extends Component{
     }
     componentDidMount() {
         this.getData()
+
     }
     getData = () => {
-        
             let params = {}
-            if(this.state.psgName){
-                params = {...params, psgName: this.state.psgName}
-            }
-            if(this.state.ageMin){
-                params = {...params, ageMin: this.state.ageMin}
-            }
-            if(this.state.ageMax){
-                params = {...params, ageMax: this.state.ageMax}
-            }
-            if(this.state.psgSex){
-                params = {...params, psgSex: this.state.psgSex}
-            }
-            if(this.state.psgClass){
-                params = {...params, psgClass: this.state.psgClass}
-            }
-            if(this.state.psgSurvived){
-                params = {...params, psgSurvived: this.state.psgSurvived}
-            }
+           if(this.props.location.search){
+               console.log(this.props.location.search)
+               params=querystring.parse(this.props.location.search)
+           }
+
 
         Axios.get(
             URL_API + 'getdata',{
@@ -68,11 +57,52 @@ class filterBE extends Component{
                     <td>{val.Gender === 'male' ? 'M': 'F'}</td>
                 </tr>
             
-            
         )
     })
     return jsx
     }
+
+    pushUrl = () => { 
+        let params = {}
+        // let feParams = querystring.parse(this.props.location.search)
+        
+        // console.log(feParams)
+        
+        if(this.state.psgName){
+            params = {...params, psgName: this.state.psgName}
+        }
+        if(this.state.ageMin){
+            params = {...params, ageMin: this.state.ageMin}
+        }
+        if(this.state.ageMax){
+            params = {...params, ageMax: this.state.ageMax}
+        }
+        if(this.state.psgSex){
+            params = {...params, psgSex: this.state.psgSex}
+        }
+        if(this.state.psgClass){
+            params = {...params, psgClass: this.state.psgClass}
+        }
+        if(this.state.psgSurvived){
+            params = {...params, psgSurvived: this.state.psgSurvived}
+        }
+
+        this.props.history.push('/search?'+querystring.stringify(params))
+
+        Axios.get(
+            URL_API + 'getdata',{
+                params:params
+            }
+        ).then(res => {
+            this.setState({
+                data:res.data
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+            }
+        
+    
 
     render (){
         return(
@@ -155,7 +185,7 @@ class filterBE extends Component{
                         <div className=' col-3'> 
                         
                         <input type='button' className='btn btn-outline-primary mt-4 ml-5 mr-4 mb-2'style={{backgroundColor:'#CC9966', color:'white'}} 
-                            onClick={()=>this.getData()} value ='Search'/>
+                            onClick={()=>this.pushUrl()} value ='Search'/>
                         
                         <input type ='button' className=' btn btn-outline-primary mr-2 mt-4 mb-2' style={{backgroundColor:'#258472', color: 'white'}}
                             onClick={this.onResetClicked} value='Reset'/>

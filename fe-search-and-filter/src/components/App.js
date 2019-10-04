@@ -13,7 +13,7 @@ class App extends Component{
         return(
           
                 <Switch>
-                    <Route component={filterBE} path="/" exact/>{/*//define / solely for home*/}
+                    <Route component={filterBE} path="/"/>{/*//define / solely for home*/}
                 </Switch>
             
         )
